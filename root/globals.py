@@ -7,7 +7,6 @@ def sigmoid(z):
 # def sigmoid(x):
 #     return 1 / (1 + math.exp(-x))
 
-
 # define the derivative of the sigmoid function
 def sigmoid_derivative(x):
     return x * (1 - x)
