@@ -42,4 +42,3 @@ def gaussian_probability(x, mean, stdev):
 # Define a function to calculate the euclidean distance between two points
 def euclidean_distance(x1, x2):
     return sum((x1[i] - x2[i]) ** 2 for i in range(len(x1))) ** 0.5
-
