@@ -114,7 +114,7 @@ def decisionTree():
         best_feature_index = find_best_feature(dataset)
         best_feature_name = feature_names[best_feature_index]
         tree = {best_feature_name: {}}
-        del feature_names[best_feature_index]
+        # del feature_names[best_feature_index]
         feature_values = set([row[best_feature_index] for row in dataset])
         for feature_value in feature_values:
             sub_feature_names = feature_names[:]
@@ -130,3 +130,14 @@ def decisionTree():
 
 if __name__ == '__main__':
     decisionTree()
+
+# 'Outlook':
+#     'Rain':
+#         'Wind':
+#             'Weak': 'Yes'
+#             'Strong': 'No'
+#     'Overcast': 'Yes'
+#     'Sunny':
+#         'Humidity':
+#             'Normal': 'Yes'
+#             'High': 'No'
