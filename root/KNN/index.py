@@ -19,6 +19,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.datasets import make_classification
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
 from sklearn import datasets
 
 # A visual representation of a k-nearest neighbor (k-NN) algorithm is typically a scatter plot of the data points,
@@ -92,6 +94,70 @@ def knnMatplotLib3():
     plt.contourf(xx, yy, Z, alpha=.8)
     plt.scatter(X[:, 0], X[:, 1], c=y, cmap='Paired')
     plt.show()
+
+# This implementation assumes that the input data, X, is a two-dimensional array,
+#     where each row represents a sample and each column represents a feature. The target variable, y, is a one-dimensional array,
+#     where each element corresponds to the class of the corresponding sample in X.
+# You can use this implementation by creating an instance of the KNN class,
+#     fitting it to your data using the fit method, and then making predictions for new data using the predict method.
+class CreateKNN:
+    def __init__(self, k=5):
+        self.k = k
+
+    def fit(self, X, y):
+        self.X_train = X
+        self.y_train = y
+
+    def predict(self, X):
+        y_pred = []
+        for x in X:
+            distances = []
+            for i in range(self.X_train.shape[0]):
+                distance = np.linalg.norm(x - self.X_train[i])
+                distances.append((distance, self.y_train[i]))
+            k_nearest = sorted(distances)[:self.k]
+            k_nearest_labels = [label for distance, label in k_nearest]
+            y_pred.append(max(set(k_nearest_labels), key=k_nearest_labels.count))
+        return y_pred
+
+# In this example the number of neighbors considered for classification is set to 3,
+#     but you can change it by passing the number of neighbors you want as an argument in the constructor of the class.
+def knn():
+    knn = CreateKNN(k=3)
+
+    X = np.array([[1, 2], [2, 4], [3, 6], [4, 8], [5, 10]])
+    y = np.array([0, 0, 1, 1, 1])
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+    # Train the model on the training data
+    knn.fit(X_train, y_train)
+
+    # Predict labels for test data
+    y_pred = knn.predict(X_test)
+
+    # Evaluate the model
+    acc = accuracy_score(y_test, y_pred)
+    print(f'Accuracy: {acc}')
+
+# Here, data is a list of input data points, where each point is a list of feature values followed by a label.
+#     The query is a single data point for which we want to find the label and k is the number of nearest neighbors to consider.
+#     The euclidean_distance function computes the Euclidean distance between two points,
+#     and the knn function sorts the distances to all data points and finds the label of the majority of the k nearest points.
+def knn2():
+    def euclidean_distance(x1, x2):
+        return sum((x1[i] - x2[i]) ** 2 for i in range(len(x1))) ** 0.5
+
+    def createKNN(data, query, k):
+        distances = [(euclidean_distance(data[i][:-1], query), data[i][-1]) for i in range(len(data))]
+        distances = sorted(distances, key=lambda x: x[0])
+        return max(distances[:k], key=lambda x: x[1])[1]
+
+    data = [[1,2,3,'A'],[4,5,6,'B'],[7,8,9,'A']]
+    query = [5,5,5]
+    k = 2
+    print(createKNN(data,query,k))
+    # This would output 'A'
 
 if __name__ == '__main__':
     knnMatplotLib()
