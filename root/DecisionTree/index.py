@@ -131,6 +131,8 @@ def decisionTree():
     print(tree)
    
 def DecisionTree2():
+    # Used to represent the nodes of the decision tree. Each node contains information about the feature used for splitting the data,
+    #   the threshold value used for the split, the left and right child nodes, and the prediction for the leaf nodes.
     # Define a class for the Decision Tree node
     class Node:
         def __init__(self, feature=None, threshold=None, left=None, right=None, prediction=None):
@@ -140,6 +142,7 @@ def DecisionTree2():
             self.right = right
             self.prediction = prediction
 
+    # calculates the gini impurity of a set of labels. It counts the number of occurrences of each label in the set and calculates the impurity as 1 minus the sum of the squared probabilities of each label.
     # Define the gini impurity calculation function
     def gini_impurity(labels):
         total = len(labels)
@@ -155,12 +158,15 @@ def DecisionTree2():
             impurity -= prob ** 2
         return impurity
 
+    # splits a dataset (X, y) into two based on a given feature and threshold. It returns the indices of the data points in the left and right splits.
     # Define the split calculation function
     def split(X, y, feature, threshold):
         left_indices = [i for i in range(len(X)) if X[i][feature] < threshold]
         right_indices = [i for i in range(len(X)) if X[i][feature] >= threshold]
         return (X[left_indices], y[left_indices]), (X[right_indices], y[right_indices])
 
+    # finds the best feature and threshold for splitting the data by iterating over all features and all possible threshold values,
+    #   calculating the gini impurity for each split, and selecting the split with the lowest impurity.
     # Define the best split calculation function
     def best_split(X, y):
         best_feature = None
@@ -179,6 +185,8 @@ def DecisionTree2():
                     best_threshold = threshold
         return best_feature, best_threshold
 
+    # builds the decision tree by recursively splitting the data based on the best feature and threshold found by best_split.
+    #   It terminates the recursion when all data points have the same label or when the maximum depth has been reached.
     # Define the build tree function
     def build_tree(X, y, depth=0, max_depth=None):
         label_counts = {}
@@ -195,6 +203,7 @@ def DecisionTree2():
         right_node = build_tree(right[0], right[1], depth + 1, max_depth)
         return Node(feature=feature, threshold=threshold, left=left_node, right=right_node)
 
+    # makes predictions for a single data point by following the path down the tree based on the feature and threshold values at each node.
     # Define a function to make predictions using the decision tree
     def predict(node, x):
         if node.prediction is not None:
@@ -204,6 +213,7 @@ def DecisionTree2():
         else:
             return predict(node.right, x)
 
+    # trains the decision tree by calling build_tree with the training data.
     # Define the fit function
     def fit(X_train, y_train, max_depth=None):
         return build_tree(X_train, y_train, max_depth=max_depth)
@@ -227,6 +237,7 @@ def DecisionTree2():
     accuracy = np.mean(y_pred == y_test)
     print("Accuracy:", accuracy)
 
+# The decision tree code from above is an implementation of the ID3 (Iterative Dichotomiser 3) algorithm for creating a decision tree classifier
 def DecisionTree3():
     class Node:
         def __init__(self, feature=None, threshold=None, left=None, right=None, prediction=None):
@@ -236,6 +247,9 @@ def DecisionTree3():
             self.right = right
             self.prediction = prediction
 
+    # This function takes a decision tree node and a sample as input and returns the prediction of the sample. If the node is a leaf node, the prediction is stored in the prediction attribute.
+    #   If it is an internal node, the function checks the value of the sample for the feature stored in the feature attribute.
+    #   If the value is less than the threshold stored in the threshold attribute, it recursively calls the predict function 
     def predict(node, x):
         if node.prediction is not None:
             return node.prediction
@@ -245,11 +259,16 @@ def DecisionTree3():
         else:
             return predict(node.right, x)
 
+    # This function calculates the entropy of a set of labels. The entropy is a measure of the impurity of the labels, with higher entropy indicating higher impurity.
+    #   The function uses the formula for entropy to calculate the entropy based on the number of occurrences of each label in the set.
     def get_entropy(y):
         _, counts = np.unique(y, return_counts=True)
         probas = counts / counts.sum()
         return -np.sum(probas * np.log2(probas))
 
+    # This function takes a feature matrix and a label vector as input and returns the best feature and threshold to split the data.
+    #   It iterates over all features and calculates the entropy of the split for each feature and each possible threshold.
+    #   The feature and threshold that result in the minimum entropy are returned as the best split.
     def find_best_split(X, y):
         n_samples, n_features = X.shape
         best_feature, best_threshold = None, None
@@ -270,6 +289,11 @@ def DecisionTree3():
         
         return best_feature, best_threshold
 
+    # This function takes a feature matrix, a label vector, and a maximum depth as input and returns a decision tree.
+    #   The function starts by checking if the labels are all the same, in which case it returns a leaf node with the prediction equal to the common label.
+    #   If the maximum depth has been reached, it also returns a leaf node with the prediction equal to the most common label in the set.
+    #   If neither of these conditions are met, the function calls find_best_split to determine the best feature and threshold to split the data,
+    #   qthen recursively calls the fit function on the left and right splits until a leaf node is reached.
     def fit(X, y, depth=0, max_depth=None):
         n_samples, n_features = X.shape
         unique_classes, counts = np.unique(y, return_counts=True)
