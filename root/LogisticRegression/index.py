@@ -106,6 +106,64 @@ def logisticRegression():
 
     # Print the predictions
     print(y_pred)
+        
+# This code defines a LogisticRegression class that can be trained on a given dataset X and target labels y using the fit method.
+#     The predict_prob method can be used to make predictions of the probability that a given example belongs to the positive class,
+#     while the predict method makes binary class predictions based on a given threshold.
+
+# Note that this is a simple example to demonstrate how to use the class. In real-world applications, you'll want to split your data into training and testing sets,
+#   evaluate the performance of the model on the test set, and use cross-validation to find the best hyperparameters for the model.
+class LogisticRegression2:
+    # This method is called when an object of the class is created. It sets the learning rate and number of iterations for the gradient descent optimization algorithm used to train the model.
+    def __init__(self, learning_rate=0.01, num_iterations=1000):
+        self.learning_rate = learning_rate
+        self.num_iterations = num_iterations
+
+    # This method takes a linear combination of the input features and weights and returns the sigmoid of that value.
+    #   The sigmoid function is used to map the input to a value between 0 and 1, which can be interpreted as a probability of the positive class.
+    def sigmoid(self, z):
+        return 1 / (1 + np.exp(-z))
+  
+    # This method calculates the cost function for logistic regression, which measures the difference between the predicted probabilities and the actual target labels.
+    #   The cost is a scalar value that should be minimized during training.
+    def cost(self, h, y):
+        return (-y * np.log(h) - (1 - y) * np.log(1 - h)).mean()
+  
+    # This method trains the logistic regression model on the input data X and target labels y. The method uses the gradient descent algorithm to adjust the weights and bias to minimize the cost function.
+    def fit(self, X, y):
+        m, n = X.shape
+        self.weights = np.zeros(n)
+        self.bias = 0
+        for i in range(self.num_iterations):
+            z = X @ self.weights + self.bias
+            h = self.sigmoid(z)
+            gradient = X.T @ (h - y) / m
+            self.weights -= self.learning_rate * gradient
+            self.bias -= self.learning_rate * (h - y).mean()
+        return self
+
+    # This method calculates the predicted probability of the positive class for each example in the input data X.
+    def predict_prob(self, X):
+        return self.sigmoid(X @ self.weights + self.bias)
+  
+    # This method uses the predict_prob method to make binary class predictions based on a given threshold.
+    #   If the predicted probability is greater than or equal to the threshold, the prediction is positive, otherwise it's negative.
+    def predict(self, X, threshold=0.5):
+        return self.predict_prob(X) >= threshold
+
+    # create the training data and target labels
+    X = np.array([[1, 2], [2, 4], [3, 6], [4, 8]])
+    y = np.array([0, 0, 1, 1])
+
+    # create an instance of the LogisticRegression class
+    clf = LogisticRegression()
+
+    # fit the model to the training data
+    clf.fit(X, y)
+
+    # make predictions on the training data
+    predictions = clf.predict(X)
+    print(predictions)
 
 if __name__ == '__main__':
     logisticRegressionMatplotLib()
