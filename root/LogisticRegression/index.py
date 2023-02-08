@@ -110,7 +110,6 @@ def logisticRegression():
 # This code defines a LogisticRegression class that can be trained on a given dataset X and target labels y using the fit method.
 #     The predict_prob method can be used to make predictions of the probability that a given example belongs to the positive class,
 #     while the predict method makes binary class predictions based on a given threshold.
-
 # Note that this is a simple example to demonstrate how to use the class. In real-world applications, you'll want to split your data into training and testing sets,
 #   evaluate the performance of the model on the test set, and use cross-validation to find the best hyperparameters for the model.
 class LogisticRegression2:
@@ -124,6 +123,7 @@ class LogisticRegression2:
     def sigmoid(self, z):
         return 1 / (1 + np.exp(-z))
   
+    # cross-entropy loss
     # This method calculates the cost function for logistic regression, which measures the difference between the predicted probabilities and the actual target labels.
     #   The cost is a scalar value that should be minimized during training.
     def cost(self, h, y):
